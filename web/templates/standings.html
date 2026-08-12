@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>團體積分排行</h1>
+<div style="display:flex; justify-content:space-between; align-items:center;">
+    <h1>團體積分排行</h1>
+    <div>
+        <a class="btn" href="{{ url_for('export_csv', kind='standings') }}">⬇ 匯出 CSV</a>
+        <a class="btn" href="{{ url_for('export_csv', kind='results') }}">⬇ 全部成績 CSV</a>
+    </div>
+</div>
 {% if rows %}
 <table class="tbl">
     <thead>

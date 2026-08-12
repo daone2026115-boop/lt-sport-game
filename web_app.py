@@ -4,8 +4,10 @@ import sqlite3
 from functools import wraps
 from pathlib import Path
 
+import csv
+import io
 from flask import (Flask, render_template, request, redirect, url_for,
-                   session, flash, jsonify)
+                   session, flash, jsonify, Response)
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from rules import DB_PATH, load_config, can_register, register, unregister
@@ -216,6 +218,123 @@ def standings():
                            ORDER BY total_pts DESC""").fetchall()
     conn.close()
     return render_template("standings.html", rows=rows)
+
+
+@app.route("/scoreboard")
+def scoreboard():
+    """公開即時公告板 (30 秒自動重新整理)"""
+    conn = db()
+    latest = conn.execute("""
+        SELECT e.name AS event, s.name AS name, s.grade || '-' || s.class_no AS cls,
+               r.rank, r.performance, r.broke_record, e.unit
+        FROM results r JOIN events e ON r.event_id = e.event_id
+        LEFT JOIN students s ON r.student_id = s.student_id
+        WHERE r.rank IS NOT NULL AND r.rank > 0
+        ORDER BY r.result_id DESC LIMIT 20
+    """).fetchall()
+    standings = conn.execute("""
+        SELECT s.grade AS grade, s.class_no AS class_no,
+               COALESCE(SUM(r.points), 0) AS total_pts,
+               COUNT(r.result_id) AS n_wins,
+               COALESCE(SUM(r.broke_record), 0) AS n_records
+        FROM students s LEFT JOIN results r ON r.student_id=s.student_id
+        AND r.rank BETWEEN 1 AND 8
+        GROUP BY s.grade, s.class_no
+        HAVING total_pts > 0 OR n_wins > 0
+        ORDER BY total_pts DESC LIMIT 10
+    """).fetchall()
+    records = conn.execute("""
+        SELECT e.name AS event, s.name AS name, s.grade || '-' || s.class_no AS cls,
+               r.performance, e.unit
+        FROM results r JOIN events e ON r.event_id=e.event_id
+        LEFT JOIN students s ON r.student_id=s.student_id
+        WHERE r.broke_record=1 ORDER BY r.result_id DESC LIMIT 10
+    """).fetchall()
+    conn.close()
+    return render_template("scoreboard.html",
+                           latest=latest, standings=standings, records=records)
+
+
+@app.route("/export/<kind>.csv")
+def export_csv(kind):
+    """公開 CSV 匯出：standings / results / registrations"""
+    conn = db()
+    if kind == "standings":
+        rows = conn.execute("""
+            SELECT s.grade AS 年級, s.class_no AS 班級,
+                   COALESCE(SUM(r.points), 0) AS 總積分,
+                   COUNT(r.result_id) AS 入圍次數,
+                   COALESCE(SUM(r.broke_record), 0) AS 破紀錄次數
+            FROM students s LEFT JOIN results r ON r.student_id=s.student_id
+            AND r.rank BETWEEN 1 AND 8
+            GROUP BY s.grade, s.class_no ORDER BY 總積分 DESC""").fetchall()
+    elif kind == "results":
+        rows = conn.execute("""
+            SELECT e.code AS 代碼, e.name AS 項目,
+                   r.rank AS 名次, s.grade AS 年, s.class_no AS 班,
+                   s.name AS 姓名, s.bib_number AS 號碼布,
+                   r.performance AS 成績, e.unit AS 單位,
+                   r.broke_record AS 破紀錄, r.points AS 積分
+            FROM results r JOIN events e ON r.event_id=e.event_id
+            LEFT JOIN students s ON r.student_id=s.student_id
+            ORDER BY e.category, e.name, r.rank""").fetchall()
+    elif kind == "registrations":
+        rows = conn.execute("""
+            SELECT e.code AS 項目代碼, e.name AS 項目,
+                   s.student_id AS 學號, s.name AS 姓名,
+                   s.grade AS 年, s.class_no AS 班, s.bib_number AS 號碼布
+            FROM registrations reg JOIN events e ON reg.event_id=e.event_id
+            JOIN students s ON reg.student_id=s.student_id
+            ORDER BY e.category, e.name, s.grade, s.class_no, s.seat_no""").fetchall()
+    else:
+        conn.close()
+        return "unknown kind", 404
+    conn.close()
+    if not rows:
+        return "no data", 204
+    buf = io.StringIO()
+    buf.write("﻿")  # BOM for Excel UTF-8
+    w = csv.writer(buf)
+    w.writerow(rows[0].keys())
+    for r in rows:
+        w.writerow(list(r))
+    return Response(buf.getvalue(), mimetype="text/csv; charset=utf-8",
+                    headers={"Content-Disposition": f"attachment; filename={kind}.csv"})
+
+
+@app.route("/admin/config", methods=["GET", "POST"])
+@login_required(role="admin")
+def admin_config():
+    import json as _json
+    cfg_path = BASE / "config.json"
+    with open(cfg_path, encoding="utf-8") as f:
+        cfg = _json.load(f)
+
+    if request.method == "POST":
+        try:
+            cfg["meet_info"]["name"] = request.form["meet_name"].strip()
+            cfg["meet_info"]["year"] = int(request.form["meet_year"])
+            cfg["meet_info"]["date"] = request.form["meet_date"].strip()
+
+            pts = [int(x.strip()) for x in request.form["individual_points"].split(",")
+                   if x.strip()]
+            cfg["scoring_rules"]["individual_points"] = pts
+            cfg["scoring_rules"]["relay_points_multiplier"] = int(request.form["relay_mul"])
+            cfg["scoring_rules"]["record_break_bonus"] = int(request.form["record_bonus"])
+            cfg["scoring_rules"]["team_ranking_top_n"] = int(request.form["top_n"])
+
+            cfg["ball_game_rules"]["active_format"] = request.form["ball_format"]
+            cfg["grouping"]["track_lanes_per_group"] = int(request.form["lanes"])
+            cfg["grouping"]["field_group_size"] = int(request.form["field_size"])
+
+            with open(cfg_path, "w", encoding="utf-8") as f:
+                _json.dump(cfg, f, ensure_ascii=False, indent=2)
+            flash("設定已儲存並立即生效", "success")
+        except (ValueError, KeyError) as e:
+            flash(f"欄位錯誤：{e}", "error")
+        return redirect(url_for("admin_config"))
+
+    return render_template("admin_config.html", cfg=cfg)
 
 
 @app.route("/api/rule_status")

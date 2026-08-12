@@ -16,6 +16,7 @@
         <nav>
             <a href="{{ url_for('events') }}">項目</a>
             <a href="{{ url_for('standings') }}">團體積分</a>
+            <a href="{{ url_for('scoreboard') }}">📢 公告板</a>
             {% if user %}
                 {% if role == 'student' %}
                     <a href="{{ url_for('me') }}">我的報名</a>
@@ -26,6 +27,7 @@
                     <a href="{{ url_for('admin_batch') }}">批次報名</a>
                     <a href="{{ url_for('admin_upload') }}">上傳</a>
                     <a href="{{ url_for('admin_rules') }}">規則</a>
+                    <a href="{{ url_for('admin_config') }}">設定</a>
                 {% endif %}
                 <a href="{{ url_for('change_password') }}">改密碼</a>
                 <span class="user-name">{{ user }} ({{ role }})</span>

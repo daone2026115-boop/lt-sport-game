@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}即時公告板 · {{ meet.name }}{% endblock %}
+{% block content %}
+<meta http-equiv="refresh" content="30">
+<h1>📢 即時公告板 <small class="muted" style="font-size:14px">(每 30 秒自動更新)</small></h1>
+
+<div style="display:grid; grid-template-columns: 2fr 1fr; gap:16px;">
+    <div>
+        <h2>最新成績</h2>
+        {% if latest %}
+        <table class="tbl">
+            <thead><tr><th>項目</th><th>名次</th><th>姓名</th><th>班</th>
+                <th>成績</th><th></th></tr></thead>
+            <tbody>
+            {% for r in latest %}
+            <tr>
+                <td>{{ r.event }}</td>
+                <td><span class="rank rank-{{ r.rank }}">{{ r.rank }}</span></td>
+                <td>{{ r.name or '-' }}</td>
+                <td>{{ r.cls }}</td>
+                <td><b>{{ r.performance }}</b> {{ r.unit or '' }}</td>
+                <td>{% if r.broke_record %}🏆 破紀錄{% endif %}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}<p class="muted">尚無成績</p>{% endif %}
+
+        {% if records %}
+        <h2>破紀錄榜 🏆</h2>
+        <table class="tbl">
+            <thead><tr><th>項目</th><th>姓名</th><th>班</th><th>新紀錄</th></tr></thead>
+            <tbody>
+            {% for r in records %}
+            <tr>
+                <td>{{ r.event }}</td><td>{{ r.name or '-' }}</td>
+                <td>{{ r.cls }}</td>
+                <td><b style="color:#c0392b">{{ r.performance }}</b> {{ r.unit or '' }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+
+    <div>
+        <h2>班級積分 Top 10</h2>
+        {% if standings %}
+        <table class="tbl">
+            <thead><tr><th>名次</th><th>班級</th><th>積分</th></tr></thead>
+            <tbody>
+            {% for s in standings %}
+            <tr>
+                <td><span class="rank rank-{{ loop.index if loop.index <=3 else 0 }}">{{ loop.index }}</span></td>
+                <td>{{ s.grade }} 年 {{ s.class_no }} 班</td>
+                <td><b>{{ s.total_pts|round(0)|int }}</b></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}<p class="muted">尚無資料</p>{% endif %}
+    </div>
+</div>
+
+<style>
+.rank {
+    display: inline-block; width: 26px; height: 26px; line-height: 26px;
+    text-align: center; border-radius: 50%; background: #bbb; color: white;
+    font-weight: bold; font-size: 12px;
+}
+.rank-1 { background: #f1c40f; color: #333; }
+.rank-2 { background: #bdc3c7; }
+.rank-3 { background: #d35400; }
+</style>
+{% endblock %}

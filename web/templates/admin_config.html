@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>全站設定</h1>
+<p class="muted">修改後立即生效，會寫回 <code>config.json</code>。</p>
+
+<form method="post">
+<div class="dashboard-grid">
+
+    <div class="card">
+        <h3>大會資訊</h3>
+        <label>大會名稱</label>
+        <input name="meet_name" value="{{ cfg.meet_info.name }}" required>
+        <label>年度</label>
+        <input name="meet_year" type="number" value="{{ cfg.meet_info.year }}" required>
+        <label>日期</label>
+        <input name="meet_date" value="{{ cfg.meet_info.date }}"
+               placeholder="YYYY-MM-DD" required>
+    </div>
+
+    <div class="card">
+        <h3>積分規則</h3>
+        <label>前 N 名積分 (逗號分隔)</label>
+        <input name="individual_points"
+               value="{{ cfg.scoring_rules.individual_points|join(', ') }}" required>
+        <p class="hint">預設 9,7,6,5,4,3,2,1 (前 8 名)</p>
+
+        <label>接力積分倍數</label>
+        <input name="relay_mul" type="number" min="1" max="10"
+               value="{{ cfg.scoring_rules.relay_points_multiplier }}" required>
+
+        <label>破紀錄加分</label>
+        <input name="record_bonus" type="number" min="0" max="99"
+               value="{{ cfg.scoring_rules.record_break_bonus }}" required>
+
+        <label>入圍名次 (前 N 名列入積分)</label>
+        <input name="top_n" type="number" min="1" max="20"
+               value="{{ cfg.scoring_rules.team_ranking_top_n }}" required>
+    </div>
+
+    <div class="card">
+        <h3>球類賽制</h3>
+        <label>目前使用</label>
+        <select name="ball_format" required>
+            {% for fmt in cfg.ball_game_rules.formats %}
+                <option value="{{ fmt }}"
+                    {% if fmt == cfg.ball_game_rules.active_format %}selected{% endif %}>
+                    {{ fmt }}
+                </option>
+            {% endfor %}
+        </select>
+        <p class="hint">切換後執行 <code>python make_bracket.py</code> 重新產出賽制表 PDF</p>
+    </div>
+
+    <div class="card">
+        <h3>分組設定</h3>
+        <label>徑賽跑道數</label>
+        <input name="lanes" type="number" min="4" max="10"
+               value="{{ cfg.grouping.track_lanes_per_group }}" required>
+
+        <label>田賽每組人數</label>
+        <input name="field_size" type="number" min="4" max="20"
+               value="{{ cfg.grouping.field_group_size }}" required>
+        <p class="hint">修改後執行 <code>python make_grouping.py</code> 重排分道</p>
+    </div>
+
+</div>
+
+<div class="action-row">
+    <button class="btn btn-primary" type="submit">儲存全部設定</button>
+    <a class="btn" href="{{ url_for('admin_dashboard') }}">取消</a>
+</div>
+</form>
+{% endblock %}
