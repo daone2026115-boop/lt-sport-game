@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>田徑報名規則設定</h1>
+<p class="muted">修改後即時生效，會影響批次報名頁的下拉格數與所有規則檢核。</p>
+
+<div class="card">
+    <h3>目前使用中：<span style="color:#e74c3c">{{ active }}</span></h3>
+    <p class="hint">
+        個人上限 {{ options[active].individual_max }} 項，
+        田賽 {{ options[active].field_max }} 項，
+        徑賽 {{ options[active].track_max }} 項，
+        接力 {{ options[active].relay_max }} 項
+        （999 = 不限）
+    </p>
+</div>
+
+<h2>編輯 / 切換規則</h2>
+<table class="tbl">
+    <thead>
+        <tr><th>使用中</th><th>規則名稱</th>
+            <th>個人上限</th><th>田賽上限</th><th>徑賽上限</th><th>接力上限</th>
+            <th>田徑二選一</th><th>動作</th></tr>
+    </thead>
+    <tbody>
+    {% for name, opt in options.items() %}
+        <tr>
+            <td style="text-align:center">
+                {% if name == active %}
+                    <span class="chip" style="background:#e74c3c">使用中</span>
+                {% else %}
+                    <form method="post" style="display:inline">
+                        <input type="hidden" name="action" value="activate">
+                        <input type="hidden" name="name" value="{{ name }}">
+                        <button class="btn btn-sm" type="submit">設為使用中</button>
+                    </form>
+                {% endif %}
+            </td>
+            <form method="post">
+                <input type="hidden" name="action" value="save_option">
+                <td><input name="name" value="{{ name }}" readonly style="background:#f5f5f5"></td>
+                <td><input name="individual_max" type="number" min="1" max="999" value="{{ opt.individual_max }}" style="width:70px"></td>
+                <td><input name="field_max" type="number" min="0" max="999" value="{{ opt.field_max }}" style="width:70px"></td>
+                <td><input name="track_max" type="number" min="0" max="999" value="{{ opt.track_max }}" style="width:70px"></td>
+                <td><input name="relay_max" type="number" min="0" max="999" value="{{ opt.relay_max }}" style="width:70px"></td>
+                <td style="text-align:center">
+                    <input name="category_exclusive" type="checkbox" value="1"
+                           {% if opt.category_exclusive %}checked{% endif %}
+                           title="勾選後：只能選田賽或徑賽其中一類">
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-primary" type="submit">儲存</button>
+            </form>
+            <form method="post" style="display:inline"
+                  onsubmit="return confirm('確定刪除規則 {{ name }}？')">
+                <input type="hidden" name="action" value="delete_option">
+                <input type="hidden" name="name" value="{{ name }}">
+                <button class="btn btn-sm btn-danger" type="submit"
+                        {% if name == active or options|length <= 1 %}disabled{% endif %}>刪除</button>
+            </form>
+                </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<h2>新增規則</h2>
+<div class="card">
+    <form method="post" style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto auto; gap:8px; align-items:end;">
+        <input type="hidden" name="action" value="save_option">
+        <div>
+            <label>規則名稱</label>
+            <input name="name" required placeholder="如：三項不限田徑">
+        </div>
+        <div><label>個人上限</label>
+            <input name="individual_max" type="number" min="1" max="999" value="3" required></div>
+        <div><label>田賽上限</label>
+            <input name="field_max" type="number" min="0" max="999" value="999" required></div>
+        <div><label>徑賽上限</label>
+            <input name="track_max" type="number" min="0" max="999" value="999" required></div>
+        <div><label>接力上限</label>
+            <input name="relay_max" type="number" min="0" max="999" value="999" required></div>
+        <div><label style="font-size:12px">田徑二選一</label>
+            <input name="category_exclusive" type="checkbox" value="1"></div>
+        <div><button class="btn btn-primary" type="submit">新增</button></div>
+    </form>
+    <p class="hint">「田徑二選一」勾選後，只能報名田賽或徑賽其中一類（勾選後個人/田/徑上限仍會套用）</p>
+</div>
+{% endblock %}

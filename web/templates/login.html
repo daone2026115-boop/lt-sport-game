@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card center">
+    <h2>登入</h2>
+    <form method="post">
+        <label>帳號（學號）</label>
+        <input name="username" required autofocus>
+        <label>密碼</label>
+        <input name="password" type="password" required>
+        <button type="submit" class="btn btn-primary">登入</button>
+    </form>
+    <p class="hint">初次登入密碼與學號相同，登入後請立即修改。</p>
+</div>
+{% endblock %}

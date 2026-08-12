@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>上傳結果</h1>
+
+<div class="card">
+    <p>檔案：<b>{{ filename }}</b>
+       {% if dry_run %}<span class="chip" style="background:#f39c12">試算模式</span>{% endif %}
+    </p>
+    <div class="stats">
+        <div class="stat"><b style="color:#27ae60">{{ ok_n }}</b><span>成功</span></div>
+        <div class="stat"><b style="color:#e74c3c">{{ fail_n }}</b><span>失敗</span></div>
+    </div>
+</div>
+
+{% if errors %}
+<div class="card">
+    <h3>失敗清單</h3>
+    <ul>
+    {% for e in errors %}
+        <li>{{ e }}</li>
+    {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<div class="action-row">
+    <a class="btn btn-primary" href="{{ url_for('admin_upload') }}">再次上傳</a>
+    <a class="btn" href="{{ url_for('admin_batch') }}">前往批次報名頁</a>
+    <a class="btn" href="{{ url_for('home') }}">回首頁</a>
+</div>
+{% endblock %}

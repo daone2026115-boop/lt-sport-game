@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>所有比賽項目</h1>
+<table class="tbl">
+    <thead>
+        <tr><th>類別</th><th>代碼</th><th>項目</th><th>性別</th><th>年級</th>
+            <th>大會紀錄</th><th>報名數</th><th></th></tr>
+    </thead>
+    <tbody>
+    {% for e in events %}
+        <tr>
+            <td><span class="tag tag-{{ e.category }}">{{ e.category }}</span></td>
+            <td>{{ e.code }}</td>
+            <td>{{ e.name }}</td>
+            <td>{{ e.gender }}</td>
+            <td>{{ e.grade_limit or '不限' }}</td>
+            <td>{{ e.record_value or '-' }} {{ e.unit or '' }}</td>
+            <td>{{ e.n_reg }}</td>
+            <td><a href="{{ url_for('event_detail', eid=e.event_id) }}">詳細</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

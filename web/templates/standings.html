@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>團體積分排行</h1>
+{% if rows %}
+<table class="tbl">
+    <thead>
+        <tr><th>名次</th><th>班級</th><th>總積分</th><th>入圍項目數</th><th>破紀錄次數</th></tr>
+    </thead>
+    <tbody>
+        {% for r in rows %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ r.grade }} 年 {{ r.class_no }} 班</td>
+            <td><b>{{ r.total_pts }}</b></td>
+            <td>{{ r.n_wins }}</td>
+            <td>{% if r.n_records %}🏆 {{ r.n_records }}{% else %}-{% endif %}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="muted">尚無成績資料</p>
+{% endif %}
+{% endblock %}

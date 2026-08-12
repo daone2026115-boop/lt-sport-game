@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>歡迎來到 {{ meet.year }} {{ meet.name }}</h1>
+<p class="lead">日期：{{ meet.date }}</p>
+
+<div class="stats">
+    <div class="stat"><b>{{ stats.students }}</b><span>參賽學生</span></div>
+    <div class="stat"><b>{{ stats.events }}</b><span>比賽項目</span></div>
+    <div class="stat"><b>{{ stats.regs }}</b><span>總報名數</span></div>
+</div>
+
+<div class="cta">
+    {% if not user %}
+        <a class="btn btn-primary" href="{{ url_for('login') }}">學生登入報名</a>
+    {% elif role == 'student' %}
+        <a class="btn btn-primary" href="{{ url_for('me') }}">我要報名 / 檢視報名</a>
+    {% endif %}
+    <a class="btn" href="{{ url_for('events') }}">查看所有項目</a>
+    <a class="btn" href="{{ url_for('standings') }}">團體積分排行</a>
+</div>
+
+<h2>目前報名規則</h2>
+<p>本次採用「<b>{{ current_rule }}</b>」，個人項目上限 {{ rule_detail.individual_max }} 項
+（田賽 {{ rule_detail.field_max }} 項、徑賽 {{ rule_detail.track_max }} 項），
+接力上限 {{ rule_detail.relay_max }} 項。</p>
+{% endblock %}

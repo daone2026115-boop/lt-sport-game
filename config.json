@@ -1,0 +1,73 @@
+{
+  "meet_info": {
+    "name": "國中運動會",
+    "year": 2026,
+    "date": "2026-11-15"
+  },
+  "track_field_rules": {
+    "active_option": "一田一徑",
+    "options": {
+      "僅一項個人": {
+        "individual_max": 1,
+        "field_max": 999,
+        "track_max": 999,
+        "relay_max": 999
+      },
+      "一田一徑": {
+        "individual_max": 2,
+        "field_max": 1,
+        "track_max": 1,
+        "relay_max": 999
+      },
+      "二項個人不限田徑": {
+        "individual_max": 2,
+        "field_max": 999,
+        "track_max": 999,
+        "relay_max": 999
+      },
+      "田或徑二選一": {
+        "individual_max": 1,
+        "field_max": 1,
+        "track_max": 1,
+        "relay_max": 999,
+        "category_exclusive": true
+      }
+    }
+  },
+  "ball_game_rules": {
+    "active_format": "循環賽",
+    "formats": [
+      "循環賽",
+      "單淘汰",
+      "雙淘汰",
+      "分組預賽加複賽"
+    ],
+    "team_unit": "班級",
+    "min_players_per_team": 5,
+    "max_players_per_team": 12
+  },
+  "scoring_rules": {
+    "individual_points": [
+      9,
+      7,
+      6,
+      5,
+      4,
+      3,
+      2,
+      1
+    ],
+    "relay_points_multiplier": 2,
+    "record_break_bonus": 3,
+    "team_ranking_top_n": 8
+  },
+  "number_encoding": {
+    "individual_format": "{grade}{class_no:02d}-{seq:02d}",
+    "team_format": "{grade}{class_no:02d}"
+  },
+  "grouping": {
+    "track_lanes_per_group": 7,
+    "field_group_size": 10,
+    "seeding_method": "snake"
+  }
+}

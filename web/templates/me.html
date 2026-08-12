@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>我的報名</h1>
+<div class="card">
+    <p><b>{{ stu.name }}</b>（{{ stu.grade }} 年 {{ stu.class_no }} 班，號碼 {{ stu.bib_number }}）</p>
+</div>
+
+<h2>已報名項目（{{ regs|length }}）</h2>
+{% if regs %}
+<table class="tbl">
+    <thead><tr><th>類別</th><th>代碼</th><th>項目</th><th>動作</th></tr></thead>
+    <tbody>
+    {% for r in regs %}
+        <tr>
+            <td><span class="tag tag-{{ r.category }}">{{ r.category }}</span></td>
+            <td>{{ r.code }}</td>
+            <td>{{ r.name }}</td>
+            <td>
+                <form method="post" action="{{ url_for('do_unregister') }}"
+                      onsubmit="return confirm('確定要退報 {{ r.name }} 嗎？')" style="display:inline">
+                    <input type="hidden" name="event_id" value="{{ r.event_id }}">
+                    <button class="btn btn-danger btn-sm">退報</button>
+                </form>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <p class="muted">你還沒報名任何項目</p>
+{% endif %}
+
+<h2>可報名項目</h2>
+<form method="post" action="{{ url_for('do_register') }}">
+    <label>選擇項目</label>
+    <select name="event_id" required>
+        {% for e in events %}
+            <option value="{{ e.event_id }}">[{{ e.category }}] {{ e.code }} {{ e.name }}</option>
+        {% endfor %}
+    </select>
+    <button class="btn btn-primary" type="submit">報名</button>
+</form>
+<p class="hint">若違反規則會在提交後顯示錯誤訊息。</p>
+{% endblock %}

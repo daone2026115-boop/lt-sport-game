@@ -1,0 +1,24 @@
+# SQLite 資料庫（每次 demo 都重建）
+data/sportmeet.db
+data/uploads/
+
+# 產出檔案（可用 make_*.py 重新生成）
+output/
+
+# 產生的 Excel（可用 make_demo_data.py / make_registration_form.py 重建）
+templates/students_demo.xlsx
+templates/events_demo.xlsx
+templates/registrations_demo.xlsx
+templates/報名表_*.xlsx
+
+# Python 快取
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE / 系統
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp

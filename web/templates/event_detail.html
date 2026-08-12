@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ ev.code }} {{ ev.name }}</h1>
+<p><span class="tag tag-{{ ev.category }}">{{ ev.category }}</span>
+   性別 {{ ev.gender }} · 年級 {{ ev.grade_limit or '不限' }} ·
+   大會紀錄 {{ ev.record_value or '-' }} {{ ev.unit or '' }}</p>
+
+<h2>報名選手（{{ regs|length }}）</h2>
+{% if regs %}
+<table class="tbl">
+    <thead><tr><th>號碼</th><th>姓名</th><th>班級</th></tr></thead>
+    <tbody>
+        {% for r in regs %}
+            <tr><td>{{ r.bib_number or '-' }}</td><td>{{ r.name }}</td>
+                <td>{{ r.grade }}-{{ r.class_no }}</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}<p class="muted">尚無報名</p>{% endif %}
+
+{% if heats %}
+<h2>分組 / 分道</h2>
+{% for h, members in heats %}
+    <h3>第 {{ h.heat_no }} 組（{{ h.round }}）</h3>
+    <table class="tbl">
+        <thead><tr><th>水道/順序</th><th>號碼</th><th>姓名</th><th>班級</th></tr></thead>
+        <tbody>
+            {% for m in members %}
+                <tr><td>{{ m.lane }}</td><td>{{ m.bib_number or m.team_code or '-' }}</td>
+                    <td>{{ m.name or m.team_code or '-' }}</td>
+                    <td>{{ m.grade }}-{{ m.class_no if m.class_no else '' }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endfor %}
+{% endif %}
+
+{% if results %}
+<h2>成績</h2>
+<table class="tbl">
+    <thead><tr><th>名次</th><th>號碼</th><th>姓名</th><th>班級</th><th>成績</th><th>破紀錄</th><th>積分</th></tr></thead>
+    <tbody>
+    {% for r in results %}
+        <tr>
+            <td>{{ r.rank }}</td><td>{{ r.bib_number or '-' }}</td>
+            <td>{{ r.name or '-' }}</td><td>{{ r.grade }}-{{ r.class_no }}</td>
+            <td>{{ r.performance }}</td>
+            <td>{% if r.broke_record %}🏆{% endif %}</td>
+            <td>{{ r.points }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+{% if matches %}
+<h2>對戰</h2>
+<table class="tbl">
+    <thead><tr><th>輪次</th><th>隊 A</th><th>隊 B</th><th>比分</th><th>勝隊</th></tr></thead>
+    <tbody>
+        {% for m in matches %}
+        <tr><td>{{ m.round }}</td><td>{{ m.team_a }}</td><td>{{ m.team_b }}</td>
+            <td>{% if m.score_a is not none %}{{ m.score_a }} : {{ m.score_b }}{% else %}-{% endif %}</td>
+            <td>{{ m.winner or '-' }}</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock %}

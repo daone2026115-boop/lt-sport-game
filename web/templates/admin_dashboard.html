@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>管理員儀表板</h1>
+
+<div class="stats">
+    <div class="stat"><b>{{ stats.students }}</b><span>學生</span></div>
+    <div class="stat"><b>{{ stats.events }}</b><span>項目</span></div>
+    <div class="stat"><b>{{ stats.regs }}</b><span>報名筆數</span></div>
+    <div class="stat"><b>{{ stats.heats }}</b><span>分組數</span></div>
+    <div class="stat"><b>{{ stats.results }}</b><span>成績筆數</span></div>
+    <div class="stat"><b>{{ stats.users }}</b><span>使用者帳號</span></div>
+</div>
+
+{% if unregistered > 0 %}
+<div class="flash flash-error">
+    有 <b>{{ unregistered }}</b> 位學生尚未報名任何項目
+</div>
+{% endif %}
+
+<h2>快速操作</h2>
+<div class="dashboard-grid">
+    <a href="{{ url_for('admin_students') }}" class="dash-card">
+        <div class="dash-icon">👥</div>
+        <div class="dash-title">學生管理</div>
+        <div class="dash-desc">新增 / 刪除 / 匯入名單，產生號碼、建立帳號</div>
+    </a>
+    <a href="{{ url_for('admin_batch') }}" class="dash-card">
+        <div class="dash-icon">📝</div>
+        <div class="dash-title">批次報名</div>
+        <div class="dash-desc">按班級一次幫多位學生登錄</div>
+    </a>
+    <a href="{{ url_for('admin_upload') }}" class="dash-card">
+        <div class="dash-icon">📤</div>
+        <div class="dash-title">上傳報名 Excel</div>
+        <div class="dash-desc">班導將 Excel 交回，直接上傳入庫</div>
+    </a>
+    <a href="{{ url_for('admin_rules') }}" class="dash-card">
+        <div class="dash-icon">⚙️</div>
+        <div class="dash-title">報名規則設定</div>
+        <div class="dash-desc">修改一人可報項目數與田徑限制</div>
+    </a>
+    <a href="{{ url_for('events') }}" class="dash-card">
+        <div class="dash-icon">🏃</div>
+        <div class="dash-title">項目清單</div>
+        <div class="dash-desc">查看所有項目與報名數</div>
+    </a>
+    <a href="{{ url_for('standings') }}" class="dash-card">
+        <div class="dash-icon">🏆</div>
+        <div class="dash-title">團體積分排行</div>
+        <div class="dash-desc">依成績即時計算班級積分</div>
+    </a>
+</div>
+
+<h2>後端指令（產出檔案於 output/ 資料夾）</h2>
+<div class="card">
+    <table class="tbl">
+        <tr><td><code>python make_registration_form.py each</code></td>
+            <td>為每個班級產出填寫式 Excel 報名表</td></tr>
+        <tr><td><code>python make_bib_cloth.py</code></td>
+            <td>產生號碼布 PDF（A4 每頁 3 張）</td></tr>
+        <tr><td><code>python make_grouping.py</code></td>
+            <td>田徑分組 + 分道表（PDF + Excel）</td></tr>
+        <tr><td><code>python make_bracket.py</code></td>
+            <td>球類賽制表（依目前賽制產出）</td></tr>
+        <tr><td><code>python make_checkin.py</code></td>
+            <td>檢錄組簽到單（橫式 A4）</td></tr>
+        <tr><td><code>python make_analysis.py</code></td>
+            <td>成績分析報表（Excel 5 分頁 + PDF 圖表）</td></tr>
+    </table>
+</div>
+{% endblock %}

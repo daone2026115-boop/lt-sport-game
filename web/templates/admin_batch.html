@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>批次報名（班導 / 管理員）</h1>
+
+<form method="get" class="card" style="display:flex; gap:12px; align-items:end;">
+    <div>
+        <label>選班級</label>
+        <select name="class_key" onchange="var p=this.value.split('-');
+                location='?grade='+p[0]+'&class_no='+p[1]">
+            <option value="">-- 請選擇班級 --</option>
+            {% for c in classes %}
+                <option value="{{ c.grade }}-{{ c.class_no }}"
+                        {% if c.grade==grade and c.class_no==class_no %}selected{% endif %}>
+                    {{ c.grade }} 年 {{ c.class_no }} 班
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div style="flex:1"></div>
+    <div>
+        <p class="muted" style="margin:0">
+            目前規則：<b>{{ active_rule }}</b>
+            (個人 {{ rule.individual_max }} / 田 {{ rule.field_max }} /
+             徑 {{ rule.track_max }} / 接力 {{ rule.relay_max }})
+            <a href="{{ url_for('admin_rules') }}" class="btn btn-sm">修改規則</a>
+        </p>
+    </div>
+</form>
+
+{% if students %}
+<form method="post">
+    <input type="hidden" name="grade" value="{{ grade }}">
+    <input type="hidden" name="class_no" value="{{ class_no }}">
+    <table class="tbl batch-tbl">
+        <thead>
+            <tr>
+                <th>座號</th><th>姓名</th><th>性別</th>
+                <th>已報項目</th>
+                {% for i in range(n_ind_slots) %}<th>個人{{ i+1 }}</th>{% endfor %}
+                {% for i in range(n_relay_slots) %}<th>接力{{ i+1 }}</th>{% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+        {% for s, regs in students %}
+            <tr>
+                <td>{{ s.seat_no }}</td>
+                <td>{{ s.name }}<br><small class="muted">{{ s.student_id }}</small></td>
+                <td>{{ s.gender }}</td>
+                <td>
+                    {% for r in regs %}
+                        <span class="chip tag-{{ r.category }}">
+                            {{ r.code }}
+                            <a href="#" onclick="removeReg('{{ s.student_id }}',{{ r.event_id }});return false">×</a>
+                        </span>
+                    {% endfor %}
+                    {% if not regs %}<span class="muted">(無)</span>{% endif %}
+                </td>
+                {% set evs = events[s.gender] %}
+                {% for slot in range(1, n_ind_slots + 1) %}
+                <td>
+                    <select name="ev_{{ s.student_id }}_{{ slot }}">
+                        <option value="">--</option>
+                        {% for e in evs.individual %}
+                            <option value="{{ e.event_id }}">[{{ e.category }}] {{ e.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                {% endfor %}
+                {% for slot in range(1, n_relay_slots + 1) %}
+                <td>
+                    <select name="ev_{{ s.student_id }}_r{{ slot }}">
+                        <option value="">--</option>
+                        {% for e in evs.relay %}
+                            <option value="{{ e.event_id }}">{{ e.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="action-row">
+        <button type="submit" class="btn btn-primary">送出全部報名</button>
+        <span class="muted">已存在的報名會自動略過；違反規則的會顯示錯誤原因。</span>
+    </div>
+</form>
+
+<form id="unreg-form" method="post" action="{{ url_for('admin_unregister') }}" style="display:none">
+    <input type="hidden" name="student_id" id="unreg-sid">
+    <input type="hidden" name="event_id" id="unreg-eid">
+    <input type="hidden" name="grade" value="{{ grade }}">
+    <input type="hidden" name="class_no" value="{{ class_no }}">
+</form>
+<script>
+function removeReg(sid, eid) {
+    if (!confirm('確定退報此項目?')) return;
+    document.getElementById('unreg-sid').value = sid;
+    document.getElementById('unreg-eid').value = eid;
+    document.getElementById('unreg-form').submit();
+}
+</script>
+
+{% elif grade %}
+    <p class="muted">此班級無學生資料</p>
+{% else %}
+    <p class="muted">請先選擇要批次報名的班級</p>
+{% endif %}
+{% endblock %}
