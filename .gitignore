@@ -22,3 +22,7 @@ __pycache__/
 .DS_Store
 Thumbs.db
 *.swp
+
+# Office 暫存/鎖檔
+~$*
+*.tmp
