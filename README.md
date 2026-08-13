@@ -6,6 +6,43 @@
 
 ---
 
+## 系統畫面
+
+### 首頁與公告板
+| 首頁 | 即時公告板（30 秒自動更新） |
+|---|---|
+| ![首頁](screenshots/home.png) | ![公告板](screenshots/scoreboard.png) |
+
+### 學生自主報名
+| 登入 | 我的報名 |
+|---|---|
+| ![登入](screenshots/login.png) | ![我的報名](screenshots/student_me.png) |
+
+### 管理員儀表板與批次報名
+| 儀表板 | 批次報名（依班級）|
+|---|---|
+| ![儀表板](screenshots/admin_dashboard.png) | ![批次報名](screenshots/admin_batch.png) |
+
+### 學生管理與規則設定
+| 學生管理 | 報名規則設定 |
+|---|---|
+| ![學生管理](screenshots/admin_students.png) | ![規則設定](screenshots/admin_rules.png) |
+
+### 全站設定與 Excel 上傳
+| 全站設定（大會/積分/賽制）| Excel 上傳 |
+|---|---|
+| ![設定](screenshots/admin_config.png) | ![上傳](screenshots/admin_upload.png) |
+
+### 公開查詢頁
+| 項目清單 | 團體積分排行 |
+|---|---|
+| ![項目](screenshots/events.png) | ![積分](screenshots/standings.png) |
+
+### 產出範例：號碼布（A4 每頁 3 張）
+![號碼布](screenshots/bib_cloth_sample.png)
+
+---
+
 ## 特色
 
 - 🎯 **可設定報名規則**：內建「一田一徑 / 僅一項個人 / 二項不限田徑 / 田或徑二選一」，或自訂
