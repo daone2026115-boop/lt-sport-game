@@ -1,5 +1,7 @@
 # 校內運動會報名及成績系統
 
+[![Tests](https://github.com/daone2026115-boop/lt-sport-game/actions/workflows/tests.yml/badge.svg)](https://github.com/daone2026115-boop/lt-sport-game/actions/workflows/tests.yml)
+
 一套為國中/國小校內運動會設計的完整系統：報名 → 分組 → 檢錄 → 成績 → 積分分析，全流程涵蓋。
 
 **主要用途**：田徑賽個人/接力報名、球類賽制編排、號碼布產出、檢錄點名、成績登錄與班級積分計算。
