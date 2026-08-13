@@ -8,13 +8,30 @@
 
     <div class="card">
         <h3>大會資訊</h3>
-        <label>大會名稱</label>
-        <input name="meet_name" value="{{ cfg.meet_info.name }}" required>
+        <label>校名（例：光復、中山）</label>
+        <input name="school_name" value="{{ cfg.meet_info.school_name or '' }}"
+               placeholder="例：光復">
+
+        <label>學制</label>
+        <select name="school_level">
+            {% for lv in ['國小', '國中', '高中', '高職', '大專', '其他'] %}
+                <option value="{{ lv }}"
+                    {% if cfg.meet_info.school_level == lv %}selected{% endif %}>{{ lv }}</option>
+            {% endfor %}
+        </select>
+
+        <label>賽事名稱</label>
+        <input name="event_type" value="{{ cfg.meet_info.event_type or '運動會' }}"
+               placeholder="運動會 / 校慶運動會" required>
+
         <label>年度</label>
         <input name="meet_year" type="number" value="{{ cfg.meet_info.year }}" required>
+
         <label>日期</label>
         <input name="meet_date" value="{{ cfg.meet_info.date }}"
                placeholder="YYYY-MM-DD" required>
+
+        <p class="hint">組合後顯示：<b>{{ cfg.meet_info.year }} {{ cfg.meet_info.school_name or '(校名)' }}{{ cfg.meet_info.school_level or '' }}{{ cfg.meet_info.event_type or '運動會' }}</b></p>
     </div>
 
     <div class="card">

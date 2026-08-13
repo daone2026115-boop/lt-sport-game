@@ -1,8 +1,11 @@
 {
   "meet_info": {
-    "name": "國中運動會",
+    "school_name": "",
+    "school_level": "國中",
+    "event_type": "運動會",
     "year": 2026,
-    "date": "2026-11-15"
+    "date": "2026-11-15",
+    "name": "國中運動會"
   },
   "track_field_rules": {
     "active_option": "一田一徑",

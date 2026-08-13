@@ -39,11 +39,21 @@ def login_required(role=None):
     return deco
 
 
+def _full_title(meet):
+    """組合完整名稱：校名+學制+賽事名 (回退到 name 欄位)"""
+    school = meet.get("school_name", "").strip()
+    level = meet.get("school_level", "").strip()
+    ev = meet.get("event_type") or meet.get("name") or "運動會"
+    return f"{school}{level}{ev}"
+
+
 @app.context_processor
 def inject_globals():
     cfg = load_config()
+    meet = dict(cfg["meet_info"])
+    meet["full_title"] = _full_title(meet)
     return {
-        "meet": cfg["meet_info"],
+        "meet": meet,
         "current_rule": cfg["track_field_rules"]["active_option"],
         "rule_detail": cfg["track_field_rules"]["options"][cfg["track_field_rules"]["active_option"]],
         "user": session.get("username"),
@@ -312,9 +322,13 @@ def admin_config():
 
     if request.method == "POST":
         try:
-            cfg["meet_info"]["name"] = request.form["meet_name"].strip()
+            cfg["meet_info"]["school_name"] = request.form.get("school_name", "").strip()
+            cfg["meet_info"]["school_level"] = request.form.get("school_level", "").strip()
+            cfg["meet_info"]["event_type"] = request.form.get("event_type", "").strip()
             cfg["meet_info"]["year"] = int(request.form["meet_year"])
             cfg["meet_info"]["date"] = request.form["meet_date"].strip()
+            # 保留 name 欄位向後相容
+            cfg["meet_info"]["name"] = f"{cfg['meet_info']['school_level']}{cfg['meet_info']['event_type']}"
 
             pts = [int(x.strip()) for x in request.form["individual_points"].split(",")
                    if x.strip()]

@@ -1,6 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>管理員儀表板</h1>
+<div style="display:flex; justify-content:space-between; align-items:center;">
+    <h1>管理員儀表板</h1>
+    <div>
+        <img alt="CI Tests"
+             src="https://github.com/daone2026115-boop/lt-sport-game/actions/workflows/tests.yml/badge.svg">
+        <a href="https://github.com/daone2026115-boop/lt-sport-game"
+           target="_blank" style="margin-left:8px; font-size:13px; color:#666;">
+            📦 GitHub Repo
+        </a>
+    </div>
+</div>
 
 <div class="stats">
     <div class="stat"><b>{{ stats.students }}</b><span>學生</span></div>

@@ -10,7 +10,7 @@
 <header>
     <div class="wrap">
         <div class="brand">
-            <a href="{{ url_for('home') }}">{{ meet.year }} {{ meet.name }}</a>
+            <a href="{{ url_for('home') }}">{{ meet.year }} {{ meet.full_title }}</a>
             <span class="rule-badge">規則：{{ current_rule }}</span>
         </div>
         <nav>
@@ -51,7 +51,7 @@
 
 <footer>
     <div class="wrap">
-        <small>{{ meet.year }} {{ meet.name }} · {{ meet.date }} · 目前規則：{{ current_rule }}
+        <small>{{ meet.year }} {{ meet.full_title }} · {{ meet.date }} · 目前規則：{{ current_rule }}
             (個人 {{ rule_detail.individual_max }} / 田 {{ rule_detail.field_max }} /
             徑 {{ rule_detail.track_max }} / 接力 {{ rule_detail.relay_max }})
         </small>

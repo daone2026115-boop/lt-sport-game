@@ -11,7 +11,17 @@ DB_PATH = BASE / "data" / "sportmeet.db"
 
 def load_config():
     with open(CONFIG_PATH, encoding="utf-8") as f:
-        return json.load(f)
+        cfg = json.load(f)
+    # 自動組出「校名+學制+賽事名」，同時更新 name 供舊程式使用
+    meet = cfg.get("meet_info", {})
+    school = meet.get("school_name", "").strip()
+    level = meet.get("school_level", "").strip()
+    ev = meet.get("event_type") or meet.get("name") or "運動會"
+    meet["full_title"] = f"{school}{level}{ev}"
+    if not meet.get("name") or school or level:
+        meet["name"] = meet["full_title"]
+    cfg["meet_info"] = meet
+    return cfg
 
 
 def get_active_track_rules():
