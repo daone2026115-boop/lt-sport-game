@@ -63,11 +63,12 @@
 ### Docker（推薦，跨平台一鍵啟動）
 ```bash
 docker compose up -d
-# 或： docker run -d -p 5000:5000 -v $(pwd)/data:/app/data -v $(pwd)/output:/app/output lt-sport-game
+# 或： docker run -d -p 5001:5000 -v $(pwd)/data:/app/data -v $(pwd)/output:/app/output lt-sport-game
 ```
-瀏覽器打開 http://localhost:5000
+瀏覽器打開 http://localhost:5001
 
 首次啟動會自動建立資料庫、匯入示範資料、建立帳號。SQLite 與產出檔案透過 volume 持久化。
+Docker 對外 port 用 5001，本機同時跑 `python web_app.py` 也不會衝突。
 
 ### Windows（一鍵）
 ```
