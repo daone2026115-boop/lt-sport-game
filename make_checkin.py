@@ -16,7 +16,7 @@ BASE = Path(__file__).parent
 OUT_DIR = BASE / "output"
 OUT_DIR.mkdir(exist_ok=True)
 
-plt.rcParams["font.sans-serif"] = ["Microsoft JhengHei"]
+plt.rcParams["font.sans-serif"] = ["Microsoft JhengHei", "Noto Sans CJK TC", "Noto Sans CJK JP", "WenQuanYi Micro Hei", "DejaVu Sans"]
 plt.rcParams["axes.unicode_minus"] = False
 
 

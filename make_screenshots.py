@@ -75,7 +75,7 @@ def render_pdf_previews():
     """把 PDF 第一頁轉 PNG (用 matplotlib 直接重繪)"""
     import matplotlib.pyplot as plt
     from matplotlib.backends.backend_agg import FigureCanvasAgg
-    plt.rcParams["font.sans-serif"] = ["Microsoft JhengHei"]
+    plt.rcParams["font.sans-serif"] = ["Microsoft JhengHei", "Noto Sans CJK TC", "Noto Sans CJK JP", "WenQuanYi Micro Hei", "DejaVu Sans"]
     plt.rcParams["axes.unicode_minus"] = False
 
     # 用 make_bib_cloth 產第一位學生的號碼布

@@ -1,0 +1,30 @@
+.git/
+.github/
+.gitignore
+.pytest_cache/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+
+# 產出檔案 (Docker 內會透過 volume 產生)
+output/
+data/*.db
+data/uploads/
+screenshots/
+
+# 示範 Excel (entrypoint 會重新產出)
+templates/students_demo.xlsx
+templates/events_demo.xlsx
+templates/registrations_demo.xlsx
+templates/報名表_*.xlsx
+
+# Word / Office
+*.docx
+~$*
+*.tmp
+
+# 開發環境
+.vscode/
+.idea/
+.DS_Store

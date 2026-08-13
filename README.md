@@ -60,6 +60,15 @@
 
 ## 快速上手
 
+### Docker（推薦，跨平台一鍵啟動）
+```bash
+docker compose up -d
+# 或： docker run -d -p 5000:5000 -v $(pwd)/data:/app/data -v $(pwd)/output:/app/output lt-sport-game
+```
+瀏覽器打開 http://localhost:5000
+
+首次啟動會自動建立資料庫、匯入示範資料、建立帳號。SQLite 與產出檔案透過 volume 持久化。
+
 ### Windows（一鍵）
 ```
 1. 雙擊 setup.bat  → 安裝套件 + 建立示範資料

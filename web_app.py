@@ -625,7 +625,11 @@ def admin_upload():
 
 
 if __name__ == "__main__":
-    print("啟動網頁伺服器：http://127.0.0.1:5000")
+    import os
+    host = os.environ.get("FLASK_HOST", "127.0.0.1")
+    port = int(os.environ.get("FLASK_PORT", 5000))
+    debug = os.environ.get("FLASK_DEBUG", "1") != "0"
+    print(f"啟動網頁伺服器：http://{host if host != '0.0.0.0' else '127.0.0.1'}:{port}")
     print("學生登入：username = 學號，密碼 = 學號（首次登入請改密碼）")
     print("管理員登入：admin / admin123")
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    app.run(host=host, port=port, debug=debug)
