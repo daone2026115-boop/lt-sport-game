@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4472C4"/>
+      <stop offset="1" stop-color="#2c3e50"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="12" fill="url(#bg)"/>
+  <text x="32" y="46" text-anchor="middle" fill="white"
+        font-size="42" font-weight="900"
+        font-family="Microsoft JhengHei, Noto Sans CJK TC, sans-serif">運</text>
+  <circle cx="52" cy="14" r="6" fill="#f1c40f"/>
+  <text x="52" y="17.5" text-anchor="middle" fill="#333"
+        font-size="8" font-weight="900" font-family="sans-serif">1</text>
+</svg>
