@@ -70,17 +70,18 @@ docker compose up -d
 首次啟動會自動建立資料庫、匯入示範資料、建立帳號。SQLite 與產出檔案透過 volume 持久化。
 Docker 對外 port 用 5001，本機同時跑 `python web_app.py` 也不會衝突。
 
-### Windows（一鍵）
+### Windows 一鍵（最推薦）
+**雙擊 `run.bat`** — 自動檢查套件、建 DB、啟動網頁、開瀏覽器
+
 ```
-1. 雙擊 setup.bat  → 安裝套件 + 建立示範資料
-2. 雙擊 start.bat  → 啟動網頁
-3. 瀏覽器打開 http://127.0.0.1:5000
+run.bat              # 智慧啟動 (自動判斷是否要初始化)
+setup.bat            # 只跑初始化
+start.bat            # 只啟動網頁 (不初始化)
 ```
 
-### macOS / Linux
+### macOS / Linux 一鍵
 ```bash
-bash setup.sh
-python web_app.py
+bash run.sh          # 智慧啟動
 ```
 
 ### 手動安裝
